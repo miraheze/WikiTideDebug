@@ -1,0 +1,35 @@
+{
+    "manifest_version": 2,
+    "name": "MirahezeDebug",
+    "description": "Injects 'X-Miraheze-Debug' header to HTTP requests.",
+    "author": "Paladox, Ori Livneh",
+    "version": "1.0",
+    "browser_action": {
+        "default_title": "X-Miraheze-Debug",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "js": ["content_script.js"]
+        }
+    ],
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions": [
+        "alarms",
+        "tabs",
+        "webRequest",
+        "webRequestBlocking",
+        "*://*/*"
+    ],
+    "applications": {
+        "gecko": {
+            "id": "",
+            "strict_min_version": "42.0"
+        }
+    }
+}
