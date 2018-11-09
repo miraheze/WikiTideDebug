@@ -19,9 +19,11 @@ var debug = {
 
     // The HTTP header we inject.
     getHeader: function () {
+        var attributes = [ 'backend=' + debug.backend ];
+
         return {
             name  : 'X-Miraheze-Debug',
-            value : debug.backend,
+            value : attributes.join( '; ' )
         };
     },
 
@@ -35,8 +37,7 @@ var debug = {
     enabled: false,
 
     // To which backend shall the request go to?
-    backend: '2',
-
+    backend: 'test1.miraheze.org',
 
     // Toggle state.
     toggle: function ( state ) {
