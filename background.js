@@ -35,8 +35,7 @@ var debug = {
     enabled: false,
 
     // To which backend shall the request go to?
-    backend: '2',
-
+    backend: 'test1.miraheze.org',
 
     // Toggle state.
     toggle: function ( state ) {
