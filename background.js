@@ -19,11 +19,9 @@ var debug = {
 
     // The HTTP header we inject.
     getHeader: function () {
-        var attributes = [ 'backend=' + debug.backend ];
-
         return {
             name  : 'X-Miraheze-Debug',
-            value : attributes.join( '; ' )
+            value : debug.backend,
         };
     },
 
