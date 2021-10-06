@@ -19,9 +19,15 @@ var debug = {
 
     // The HTTP header we inject.
     getHeader: function () {
+        var attributes = [ debug.backend ];
+
+        if ( debug.forceprofile ) {
+            attributes.push( 'forceprofile' );
+        }
+
         return {
             name  : 'X-Miraheze-Debug',
-            value : debug.backend,
+            value : attributes.join( '; ' ),
         };
     },
 
@@ -36,6 +42,8 @@ var debug = {
 
     // To which backend shall the request go to?
     backend: 'test3.miraheze.org',
+
+    forceprofile: false,
 
     // Toggle state.
     toggle: function ( state ) {
@@ -71,11 +79,12 @@ var debug = {
         if ( request.action === 'set' ) {
             debug.toggle( request.enabled );
             debug.backend = request.backend;
+            debug.forceprofile = request.forceprofile;
         } else if ( request.action === 'get' ) {
             sendResponse( {
-                action   : 'state',
-                enabled  : debug.enabled,
-                backend  : debug.backend,
+                action: 'state',
+                enabled: debug.enabled,
+                backend: debug.backend,
             } );
         }
     }
