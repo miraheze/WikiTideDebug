@@ -35,7 +35,7 @@ var debug = {
     enabled: false,
 
     // To which backend shall the request go to?
-    backend: 'test1.miraheze.org',
+    backend: 'test3.miraheze.org',
 
     // Toggle state.
     toggle: function ( state ) {
@@ -73,9 +73,9 @@ var debug = {
             debug.backend = request.backend;
         } else if ( request.action === 'get' ) {
             sendResponse( {
-                action   : 'state',
-                enabled  : debug.enabled,
-                backend  : debug.backend,
+                action: 'state',
+                enabled: debug.enabled,
+                backend: debug.backend,
             } );
         }
     }
