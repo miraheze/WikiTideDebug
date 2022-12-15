@@ -49,7 +49,7 @@ var debug = {
     // Dim the toolbar icon when inactive.
     updateIcon: function () {
         var path = debug.enabled ? 'icon_38_on.png' : 'default.png';
-        chrome.browserAction.setIcon( { path: path } );
+        chrome.action.setIcon( { path: path } );
     },
 
     // Inject header when active.
