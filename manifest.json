@@ -1,10 +1,10 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "MirahezeDebug",
     "description": "Injects 'X-Miraheze-Debug' header to HTTP requests.",
-    "author": [ "Paladox", "Ori Livneh" ],
-    "version": "1.1",
-    "browser_action": {
+    "author": [ "Paladox", "Universal Omega", "Ori Livneh" ],
+    "version": "2.0.0",
+    "action": {
         "default_title": "X-Miraheze-Debug",
         "default_popup": "popup.html"
     },
@@ -17,13 +17,19 @@
         }
     ],
     "background": {
-        "scripts": ["background.js"]
+        "service_worker": "background.js",
+        "type": "module"
     },
     "permissions": [
         "alarms",
         "tabs",
         "webRequest",
-        "webRequestBlocking",
+        "webRequestBlocking"
+    ],
+    "host_permissions": [
+        "*://*.miraheze.org/*"
+    ],
+    "optional_host_permissions": [
         "*://*/*"
     ],
     "applications": {
