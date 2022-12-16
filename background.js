@@ -57,40 +57,38 @@ var debug = {
             } );
         }
 
-        if ( true ) {
-            let requestHeaders = { 
-                header: 'X-Miraheze-Debug', 
-                operation: debug.enabled ?
-                    chrome.declarativeNetRequest.HeaderOperation.SET :
-                    chrome.declarativeNetRequest.HeaderOperation.REMOVE,
-                value: debug.backend
-            };
+        let requestHeaders = { 
+            header: 'X-Miraheze-Debug', 
+            operation: debug.enabled ?
+                chrome.declarativeNetRequest.HeaderOperation.SET :
+                chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+            value: debug.backend
+        };
 
-            if ( !debug.enabled ) {
-                delete requestHeaders['value'];
-            }
-
-            chrome.declarativeNetRequest.updateDynamicRules({
-                addRules: [
-                    {
-                        id: 1,
-                        priority: 1,
-                        action: {
-                            type: 'modifyHeaders',
-                            requestHeaders: [ requestHeaders ],
-                        },
-                        condition: {
-                            regexFilter: '|http*',
-                            resourceTypes: Object.values(chrome.declarativeNetRequest.ResourceType)
-                        },
-                    },
-                ],
-
-                removeRuleIds: [1]
-            }, async (result) => {
-                console.log('created', result);
-            });
+        if ( !debug.enabled ) {
+            delete requestHeaders['value'];
         }
+
+        chrome.declarativeNetRequest.updateDynamicRules({
+            addRules: [
+                {
+                    id: 1,
+                    priority: 1,
+                    action: {
+                        type: 'modifyHeaders',
+                        requestHeaders: [ requestHeaders ],
+                    },
+                    condition: {
+                        regexFilter: '|http*',
+                        resourceTypes: Object.values(chrome.declarativeNetRequest.ResourceType)
+                    },
+                },
+            ],
+
+            removeRuleIds: [1]
+        }, async (result) => {
+            console.log('created', result);
+        });
     }
 };
 
