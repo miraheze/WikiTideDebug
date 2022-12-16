@@ -23,8 +23,7 @@
     "permissions": [
         "alarms",
         "tabs",
-        "webRequest",
-        "webRequestBlocking"
+        "declarativeNetRequest"
     ],
     "host_permissions": [
         "*://*.miraheze.org/*"
