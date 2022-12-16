@@ -34,8 +34,12 @@ var debug = {
 
     // Dim the toolbar icon when inactive.
     updateIcon: function () {
-        var path = debug.enabled ? 'icon_38_on.png' : 'default.png';
-        chrome.action.setIcon( { path: path } );
+        if ( debug.enabled ) {
+            chrome.action.setBadgeBackgroundColor( { color: '#447ff5' } );
+            chrome.action.setBadgeText( { text: 'ON' } );
+        } else {
+            chrome.action.setBadgeText( { text: '' } );
+        }
     },
 
     // Automatic shutoff.
