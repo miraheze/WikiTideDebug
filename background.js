@@ -58,6 +58,18 @@ var debug = {
         }
 
         if ( true ) {
+            let requestHeaders = { 
+                header: 'X-Miraheze-Debug', 
+                operation: debug.enabled ?
+                    chrome.declarativeNetRequest.HeaderOperation.SET :
+                    chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+                value: debug.backend
+            };
+
+            if ( !debug.enabled ) {
+                delete requestHeaders['value'];
+            }
+
             chrome.declarativeNetRequest.updateDynamicRules({
                 addRules: [
                     {
@@ -65,15 +77,7 @@ var debug = {
                         priority: 1,
                         action: {
                             type: 'modifyHeaders',
-                            requestHeaders: [
-                                { 
-                                    header: 'X-Miraheze-Debug', 
-                                    operation: debug.enabled ?
-                                        chrome.declarativeNetRequest.HeaderOperation.SET :
-                                        chrome.declarativeNetRequest.HeaderOperation.REMOVE,
-                                    value: debug.backend
-                                },
-                            ],
+                            requestHeaders: [ requestHeaders ],
                         },
                         condition: {
                             regexFilter: '|http*',
