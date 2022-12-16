@@ -23,14 +23,10 @@
     "permissions": [
         "alarms",
         "tabs",
-        "declarativeNetRequest",
-        "declarativeNetRequestWithHostAccess"
+        "declarativeNetRequest"
     ],
     "host_permissions": [
-        "*://*.miraheze.org/*"
-    ],
-    "optional_host_permissions": [
-        "*://*/*"
+        "<all_urls>"
     ],
     "applications": {
         "gecko": {
