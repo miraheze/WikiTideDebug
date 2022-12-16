@@ -8,6 +8,9 @@
         "Ori Livneh"
     ],
     "version": "2.0.0",
+    "icons": {
+        "512": "logo.png"
+    },
     "action": {
         "default_title": "X-Miraheze-Debug",
         "default_popup": "popup.html"
