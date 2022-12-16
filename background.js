@@ -57,7 +57,7 @@ var debug = {
             } );
         }
 
-        if ( debug.enabled ) {
+        if ( true ) {
             chrome.declarativeNetRequest.updateDynamicRules({
                 addRules: [
                     {
@@ -68,7 +68,9 @@ var debug = {
                             requestHeaders: [
                                 { 
                                     header: 'X-Miraheze-Debug', 
-                                    operation: 'set', 
+                                    operation: debug.enabled ?
+                                        chrome.declarativeNetRequest.HeaderOperation.SET :
+                                        chrome.declarativeNetRequest.HeaderOperation.REMOVE,
                                     value: debug.backend
                                 },
                             ],
