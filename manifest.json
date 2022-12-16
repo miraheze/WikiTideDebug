@@ -23,7 +23,8 @@
     "permissions": [
         "alarms",
         "tabs",
-        "declarativeNetRequest"
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
     ],
     "host_permissions": [
         "*://*.miraheze.org/*"
