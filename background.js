@@ -17,20 +17,6 @@
 
 var debug = {
 
-    // The HTTP header we inject.
-    getHeader: function () {
-        return {
-            name  : 'X-Miraheze-Debug',
-            value : debug.backend,
-        };
-    },
-
-
-    // We intercept requests to URLs matching these patterns.
-    urlPatterns: [
-        '*://*/*',
-    ],
-
     // Current state: if true, inject header; if not, do nothing.
     enabled: false,
 
@@ -52,14 +38,6 @@ var debug = {
         chrome.action.setIcon( { path: path } );
     },
 
-    // Inject header when active.
-    onBeforeSendHeaders: function ( req ) {
-        if ( debug.enabled ) {
-            req.requestHeaders.push( debug.getHeader() );
-        }
-        return { requestHeaders: req.requestHeaders };
-    },
-
     // Automatic shutoff.
     onAlarm: function ( alarm ) {
         if ( alarm.name === 'autoOff' ) {
@@ -78,12 +56,38 @@ var debug = {
                 backend: debug.backend,
             } );
         }
+
+        if ( debug.enabled ) {
+            chrome.declarativeNetRequest.updateDynamicRules({
+                addRules: [
+                    {
+                        id: 1,
+                        priority: 1,
+                        action: {
+                            type: 'modifyHeaders',
+                            requestHeaders: [
+                                { 
+                                    header: 'X-Miraheze-Debug', 
+                                    operation: 'set', 
+                                    value: debug.backend
+                                },
+                            ],
+                        },
+                        condition: {
+                            regexFilter: '|http*',
+                            resourceTypes: Object.values(chrome.declarativeNetRequest.ResourceType)
+                        },
+                    },
+                ],
+
+                removeRuleIds: [1]
+            }, async (result) => {
+                console.log('created', result);
+            });
+        }
     }
 };
 
 chrome.runtime.onMessage.addListener( debug.onMessage );
 
 chrome.alarms.onAlarm.addListener( debug.onAlarm );
-
-chrome.webRequest.onBeforeSendHeaders.addListener( debug.onBeforeSendHeaders,
-    { urls: debug.urlPatterns }, [ 'blocking', 'requestHeaders' ] );
