@@ -74,7 +74,7 @@ var debug = {
             delete requestHeaders['value'];
         }
 
-        chrome.declarativeNetRequest.updateDynamicRules({
+        chrome.declarativeNetRequest.updateDynamicRules( {
             addRules: [
                 {
                     id: 1,
@@ -85,15 +85,13 @@ var debug = {
                     },
                     condition: {
                         regexFilter: '|http*',
-                        resourceTypes: Object.values(chrome.declarativeNetRequest.ResourceType)
+                        resourceTypes: Object.values( chrome.declarativeNetRequest.ResourceType )
                     },
                 },
             ],
 
             removeRuleIds: [1]
-        }, async (result) => {
-            console.log('created', result);
-        });
+        } );
     }
 };
 
