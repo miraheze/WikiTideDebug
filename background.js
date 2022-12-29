@@ -69,19 +69,19 @@ chrome.runtime.onConnect.addListener( debug.onConnect );
 
 chrome.alarms.onAlarm.addListener( debug.onAlarm );
 
-chrome.declarativeWebRequest.onBeforeRequest.addRules( [
+chrome.declarativeNetRequest.onBeforeRequest.addRules( [
     {
         conditions: [
-            new chrome.declarativeWebRequest.RequestMatcher( {
+            new chrome.declarativeNetRequest.RequestMatcher( {
                 url: { urlMatches: '*://*/*' },
             } ),
-            new chrome.declarativeWebRequest.RequestMatcher( {
+            new chrome.declarativeNetRequest.RequestMatcher( {
                 extensionId: chrome.runtime.id,
                 enabled: true,
             } ),
         ],
         actions: [
-            new chrome.declarativeWebRequest.ModifyRequestHeader( {
+            new chrome.declarativeNetRequest.ModifyRequestHeader( {
                 name: 'X-Miraheze-Debug',
                 value: debug.backend,
             } ),
