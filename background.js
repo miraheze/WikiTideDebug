@@ -69,7 +69,7 @@ chrome.runtime.onConnect.addListener( debug.onConnect );
 
 chrome.alarms.onAlarm.addListener( debug.onAlarm );
 
-chrome.declarativeNetRequest.onBeforeRequest.addRules( [
+chrome.declarativeNetRequest.onRequest.addRules( [
     {
         conditions: [
             new chrome.declarativeNetRequest.RequestMatcher( {
