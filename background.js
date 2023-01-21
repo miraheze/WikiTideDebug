@@ -33,6 +33,7 @@ var debug = {
         }
     },
 
+    // Dim the toolbar icon when inactive.
     updateIcon: function () {
         if ( debug.enabled ) {
             chrome.action.setBadgeBackgroundColor( { color: '#447ff5' } );
@@ -49,42 +50,51 @@ var debug = {
         }
     },
 
-    onConnect: function ( port ) {
-        port.onMessage.addListener( function ( request ) {
-            if ( request.action === 'set' ) {
-                debug.toggle( request.enabled );
-                debug.backend = request.backend;
-            } else if ( request.action === 'get' ) {
-                port.postMessage( {
-                    action: 'state',
-                    enabled: debug.enabled,
-                    backend: debug.backend,
-                } );
-            }
+    onMessage: function ( request, sender, sendResponse ) {
+        if ( request.action === 'set' ) {
+            debug.toggle( request.enabled );
+            debug.backend = request.backend;
+        } else if ( request.action === 'get' ) {
+            sendResponse( {
+                action: 'state',
+                enabled: debug.enabled,
+                backend: debug.backend,
+            } );
+        }
+
+        let requestHeaders = { 
+            header: 'X-Miraheze-Debug', 
+            operation: debug.enabled ?
+                chrome.declarativeNetRequest.HeaderOperation.SET :
+                chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+            value: debug.backend
+        };
+
+        if ( !debug.enabled ) {
+            delete requestHeaders['value'];
+        }
+
+        chrome.declarativeNetRequest.updateDynamicRules( {
+            addRules: [
+                {
+                    id: 1,
+                    priority: 1,
+                    action: {
+                        type: 'modifyHeaders',
+                        requestHeaders: [ requestHeaders ],
+                    },
+                    condition: {
+                        regexFilter: '|http*',
+                        resourceTypes: Object.values( chrome.declarativeNetRequest.ResourceType )
+                    },
+                },
+            ],
+
+            removeRuleIds: [1]
         } );
-    },
+    }
 };
 
-chrome.runtime.onConnect.addListener( debug.onConnect );
+chrome.runtime.onMessage.addListener( debug.onMessage );
 
 chrome.alarms.onAlarm.addListener( debug.onAlarm );
-
-chrome.declarativeNetRequest.onRequest.addRules( [
-    {
-        conditions: [
-            new chrome.declarativeNetRequest.RequestMatcher( {
-                url: { urlMatches: '*://*/*' },
-            } ),
-            new chrome.declarativeNetRequest.RequestMatcher( {
-                extensionId: chrome.runtime.id,
-                enabled: true,
-            } ),
-        ],
-        actions: [
-            new chrome.declarativeNetRequest.ModifyRequestHeader( {
-                name: 'X-Miraheze-Debug',
-                value: debug.backend,
-            } ),
-        ],
-    },
-] );
