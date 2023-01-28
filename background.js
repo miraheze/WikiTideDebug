@@ -1,5 +1,6 @@
 /**
  * Copyright 2015, 2016 Ori Livneh <ori@wikimedia.org>
+ * Copyright 2022, 2023 Universal Omega <universalomega@miraheze.org>
  *
  * Licensed under the Apache License, Version 2.0 ( the "License" );
  * you may not use this file except in compliance with the License.
@@ -16,20 +17,6 @@
 'use strict';
 
 var debug = {
-
-    // The HTTP header we inject.
-    getHeader: function () {
-        return {
-            name  : 'X-Miraheze-Debug',
-            value : debug.backend,
-        };
-    },
-
-
-    // We intercept requests to URLs matching these patterns.
-    urlPatterns: [
-        '*://*/*',
-    ],
 
     // Current state: if true, inject header; if not, do nothing.
     enabled: false,
@@ -48,16 +35,12 @@ var debug = {
 
     // Dim the toolbar icon when inactive.
     updateIcon: function () {
-        var path = debug.enabled ? 'icon_38_on.png' : 'default.png';
-        chrome.browserAction.setIcon( { path: path } );
-    },
-
-    // Inject header when active.
-    onBeforeSendHeaders: function ( req ) {
         if ( debug.enabled ) {
-            req.requestHeaders.push( debug.getHeader() );
+            chrome.action.setBadgeBackgroundColor( { color: '#447ff5' } );
+            chrome.action.setBadgeText( { text: 'ON' } );
+        } else {
+            chrome.action.setBadgeText( { text: '' } );
         }
-        return { requestHeaders: req.requestHeaders };
     },
 
     // Automatic shutoff.
@@ -78,12 +61,40 @@ var debug = {
                 backend: debug.backend,
             } );
         }
+
+        let requestHeaders = { 
+            header: 'X-Miraheze-Debug', 
+            operation: debug.enabled ?
+                chrome.declarativeNetRequest.HeaderOperation.SET :
+                chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+            value: debug.backend
+        };
+
+        if ( !debug.enabled ) {
+            delete requestHeaders['value'];
+        }
+
+        chrome.declarativeNetRequest.updateDynamicRules( {
+            addRules: [
+                {
+                    id: 1,
+                    priority: 1,
+                    action: {
+                        type: 'modifyHeaders',
+                        requestHeaders: [ requestHeaders ],
+                    },
+                    condition: {
+                        regexFilter: '|http*',
+                        resourceTypes: Object.values( chrome.declarativeNetRequest.ResourceType )
+                    },
+                },
+            ],
+
+            removeRuleIds: [1]
+        } );
     }
 };
 
 chrome.runtime.onMessage.addListener( debug.onMessage );
 
 chrome.alarms.onAlarm.addListener( debug.onAlarm );
-
-chrome.webRequest.onBeforeSendHeaders.addListener( debug.onBeforeSendHeaders,
-    { urls: debug.urlPatterns }, [ 'blocking', 'requestHeaders' ] );
