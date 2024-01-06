@@ -7,28 +7,33 @@
   </head>
   <body class="hidden">
     <div class="options">
-      <div>
-        <select class="option" id="backend">
-          <option value="mw131.miraheze.org">mw131.miraheze.org</option>
-          <option value="mw132.miraheze.org">mw132.miraheze.org</option>
-          <option value="mw133.miraheze.org">mw133.miraheze.org</option>
-          <option value="mw134.miraheze.org">mw134.miraheze.org</option>
-          <option value="mw141.miraheze.org">mw141.miraheze.org</option>
-          <option value="mw142.miraheze.org">mw142.miraheze.org</option>
-          <option value="mw143.miraheze.org">mw143.miraheze.org</option>
-          <option value="test131.miraheze.org">test131.miraheze.org</option>
-          <option value="mwtask141.miraheze.org">mwtask141.miraheze.org</option>
-        </select>
-      </div>
-    </div>
-    <div class="switch-container">
-      <div class="switch">
-        <input type="checkbox" name="switch" class="switch-checkbox option" id="enabled">
-        <label class="switch-label" for="enabled">
-          <span class="switch-inner"></span>
-          <span class="switch-switch"></span>
-        </label>
-      </div>
+        <div class="input-container">
+            <label class="input-label" for="accessKey">Access Key:</label>
+            <input type="password" class="option access-key-input" id="accessKey" placeholder="Enter Access Key" />
+        </div>
+        <div class="input-container">
+          <label class="input-label" for="backend">Backend:</label>
+          <select class="option backend-dropdown" id="backend">
+            <option value="mw131.miraheze.org">mw131.miraheze.org</option>
+            <option value="mw132.miraheze.org">mw132.miraheze.org</option>
+            <option value="mw133.miraheze.org">mw133.miraheze.org</option>
+            <option value="mw134.miraheze.org">mw134.miraheze.org</option>
+            <option value="mw141.miraheze.org">mw141.miraheze.org</option>
+            <option value="mw142.miraheze.org">mw142.miraheze.org</option>
+            <option value="mw143.miraheze.org">mw143.miraheze.org</option>
+            <option value="test131.miraheze.org">test131.miraheze.org</option>
+            <option value="mwtask141.miraheze.org">mwtask141.miraheze.org</option>
+          </select>
+        </div>
+        <div class="switch-container">
+            <label class="switch">
+                <input type="checkbox" name="switch" class="switch-checkbox option" id="enabled" />
+                <span class="switch-label">
+                    <span class="switch-inner"></span>
+                    <span class="switch-switch"></span>
+                </span>
+            </label>
+        </div>
     </div>
   </body>
 </html>

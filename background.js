@@ -1,6 +1,6 @@
 /**
  * Copyright 2015, 2016 Ori Livneh <ori@wikimedia.org>
- * Copyright 2022, 2023 Universal Omega <universalomega@miraheze.org>
+ * Copyright 2022-2024 Universal Omega <universalomega@miraheze.org>
  *
  * Licensed under the Apache License, Version 2.0 ( the "License" );
  * you may not use this file except in compliance with the License.
@@ -16,85 +16,99 @@
  */
 'use strict';
 
-var debug = {
+const debug = {
+	// Current state: if true, inject header; if not, do nothing.
+	enabled: false,
 
-    // Current state: if true, inject header; if not, do nothing.
-    enabled: false,
+	// To which backend shall the request go to?
+	backend: 'test131.miraheze.org',
 
-    // To which backend shall the request go to?
-    backend: 'test131.miraheze.org',
+	// Toggle state.
+	toggle: (state) => {
+		debug.enabled = state;
+		debug.updateIcon();
+		if (debug.enabled) {
+			chrome.alarms.create('autoOff', { delayInMinutes: 15 });
+		}
+	},
 
-    // Toggle state.
-    toggle: function ( state ) {
-        debug.enabled = state;
-        debug.updateIcon();
-        if ( debug.enabled ) {
-            chrome.alarms.create( 'autoOff', { delayInMinutes: 15 } );
-        }
-    },
+	// Get access key required for extension to work.
+	getAccessKey: async () => {
+		const { accessKey } = await chrome.storage.local.get(['accessKey']);
+		return accessKey || '';
+	},
 
-    // Dim the toolbar icon when inactive.
-    updateIcon: function () {
-        if ( debug.enabled ) {
-            chrome.action.setBadgeBackgroundColor( { color: '#447ff5' } );
-            chrome.action.setBadgeText( { text: 'ON' } );
-        } else {
-            chrome.action.setBadgeText( { text: '' } );
-        }
-    },
+	// Dim the toolbar icon when inactive.
+	updateIcon: () => {
+		if (debug.enabled) {
+			chrome.action.setBadgeBackgroundColor({ color: '#447ff5' });
+			chrome.action.setBadgeText({ text: 'ON' });
+		} else {
+			chrome.action.setBadgeText({ text: '' });
+		}
+	},
 
-    // Automatic shutoff.
-    onAlarm: function ( alarm ) {
-        if ( alarm.name === 'autoOff' ) {
-            debug.toggle( false );
-        }
-    },
+	// Automatic shutoff.
+	onAlarm: (alarm) => {
+		if (alarm.name === 'autoOff') {
+			debug.toggle(false);
+		}
+	},
 
-    onMessage: function ( request, sender, sendResponse ) {
-        if ( request.action === 'set' ) {
-            debug.toggle( request.enabled );
-            debug.backend = request.backend;
-        } else if ( request.action === 'get' ) {
-            sendResponse( {
-                action: 'state',
-                enabled: debug.enabled,
-                backend: debug.backend,
-            } );
-        }
+	onMessage: async (request, sender, sendResponse) => {
+		if (request.action === 'set') {
+			debug.toggle(request.enabled);
+			debug.backend = request.backend;
+		} else if (request.action === 'get') {
+			sendResponse({
+				action: 'state',
+				enabled: debug.enabled,
+				backend: debug.backend,
+			});
+		}
 
-        let requestHeaders = { 
-            header: 'X-Miraheze-Debug', 
-            operation: debug.enabled ?
-                chrome.declarativeNetRequest.HeaderOperation.SET :
-                chrome.declarativeNetRequest.HeaderOperation.REMOVE,
-            value: debug.backend
-        };
+		let requestHeaders = [
+			{
+				header: 'X-Miraheze-Debug',
+				operation: debug.enabled ?
+					chrome.declarativeNetRequest.HeaderOperation.SET :
+					chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+				value: debug.backend,
+			},
+			{
+				header: 'X-Miraheze-Debug-Access-Key',
+				operation: debug.enabled ?
+					chrome.declarativeNetRequest.HeaderOperation.SET :
+					chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+				value: await debug.getAccessKey(),
+			},
+		];
 
-        if ( !debug.enabled ) {
-            delete requestHeaders['value'];
-        }
+		if (!debug.enabled) {
+			delete requestHeaders[0]['value'];
+			delete requestHeaders[1]['value'];
+		}
 
-        chrome.declarativeNetRequest.updateDynamicRules( {
-            addRules: [
-                {
-                    id: 1,
-                    priority: 1,
-                    action: {
-                        type: 'modifyHeaders',
-                        requestHeaders: [ requestHeaders ],
-                    },
-                    condition: {
-                        regexFilter: '|http*',
-                        resourceTypes: Object.values( chrome.declarativeNetRequest.ResourceType )
-                    },
-                },
-            ],
+		chrome.declarativeNetRequest.updateDynamicRules({
+			addRules: [
+				{
+					id: 1,
+					priority: 1,
+					action: {
+						type: 'modifyHeaders',
+						requestHeaders: requestHeaders,
+					},
+					condition: {
+						regexFilter: '|http*',
+						resourceTypes: Object.values(chrome.declarativeNetRequest.ResourceType),
+					},
+				},
+			],
 
-            removeRuleIds: [1]
-        } );
-    }
+			removeRuleIds: [1],
+		});
+	},
 };
 
-chrome.runtime.onMessage.addListener( debug.onMessage );
-
-chrome.alarms.onAlarm.addListener( debug.onAlarm );
+chrome.runtime.onMessage.addListener(debug.onMessage);
+chrome.alarms.onAlarm.addListener(debug.onAlarm);

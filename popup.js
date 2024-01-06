@@ -1,33 +1,49 @@
-window.addEventListener( 'load', function () {
-  'use strict';
+document.addEventListener('DOMContentLoaded', async () => {
+	'use strict';
 
-  var $options = [].slice.call( document.querySelectorAll( '.option' ) );
+	const $options = Array.from(document.querySelectorAll('.option'));
 
-  function onUpdate() {
-      var state = { action: 'set' };
+	function onUpdate() {
+		const state = { action: 'set' };
 
-      $options.forEach( function ( $el ) {
-          state[ $el.id ] = $el.checked !== undefined
-            ? $el.checked
-            : $el.value;
-      } );
+		$options.forEach(($el) => {
+			state[$el.id] = $el.checked !== undefined ? $el.checked : $el.value;
+		});
 
-      chrome.runtime.sendMessage( state );
-  }
+		chrome.runtime.sendMessage(state);
+	}
 
-  chrome.runtime.sendMessage( { action: 'get' }, function ( response ) {
-      $options.forEach( function ( $el ) {
-          var value = response[ $el.id ];
+	async function getAccessKey() {
+		const { accessKey } = await chrome.storage.local.get(['accessKey']);
+		return accessKey || '';
+	}
 
-          if ( typeof value === 'boolean' ) {
-              $el.checked = value;
-          } else {
-              $el.value = value;
-          }
+	// Handling for access key input
+	const accessKeyInput = document.getElementById('accessKey');
+	accessKeyInput.addEventListener('input', () => {
+		chrome.storage.local.set({ accessKey: accessKeyInput.value });
+		onUpdate(); // Trigger the update function when the access key changes
+	});
 
-          $el.addEventListener( 'change', onUpdate, false );
-      } );
+	accessKeyInput.value = await getAccessKey();
 
-      document.body.className = '';
-  } );
-} );
+	chrome.runtime.sendMessage({ action: 'get' }, (response) => {
+		$options.forEach(async ($el) => {
+			let value = response[$el.id];
+
+			if (typeof value === 'boolean') {
+				$el.checked = value;
+			} else {
+				if ($el.id === 'accessKey') {
+					value = await getAccessKey();
+				}
+
+				$el.value = value;
+			}
+
+			$el.addEventListener('change', onUpdate, false);
+		});
+
+		document.body.className = '';
+	});
+});
