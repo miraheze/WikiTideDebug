@@ -21,7 +21,7 @@ const debug = {
 	enabled: false,
 
 	// To which backend shall the request go to?
-	backend: 'test131.miraheze.org',
+	backend: 'test151.wikitide.net',
 
 	// Toggle state.
 	toggle: (state) => {
