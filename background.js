@@ -1,6 +1,6 @@
 /**
  * Copyright 2015, 2016 Ori Livneh <ori@wikimedia.org>
- * Copyright 2022-2024 Universal Omega <universalomega@miraheze.org>
+ * Copyright 2022-2024 Universal Omega <universalomega@wikitide.org>
  *
  * Licensed under the Apache License, Version 2.0 ( the "License" );
  * you may not use this file except in compliance with the License.
@@ -69,14 +69,14 @@ const debug = {
 
 		let requestHeaders = [
 			{
-				header: 'X-Miraheze-Debug',
+				header: 'X-WikiTide-Debug',
 				operation: debug.enabled ?
 					chrome.declarativeNetRequest.HeaderOperation.SET :
 					chrome.declarativeNetRequest.HeaderOperation.REMOVE,
 				value: debug.backend,
 			},
 			{
-				header: 'X-Miraheze-Debug-Access-Key',
+				header: 'X-WikiTide-Debug-Access-Key',
 				operation: debug.enabled ?
 					chrome.declarativeNetRequest.HeaderOperation.SET :
 					chrome.declarativeNetRequest.HeaderOperation.REMOVE,
