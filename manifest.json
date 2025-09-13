@@ -2,6 +2,11 @@
     "manifest_version": 3,
     "name": "WikiTideDebug",
     "description": "Injects 'X-WikiTide-Debug' header to HTTP requests.",
+    "author": [
+        "Universal Omega",
+        "Paladox",
+        "Ori Livneh"
+    ],
     "version": "3.0.0",
     "icons": {
         "512": "logo.png"
@@ -12,26 +17,23 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://*/*"],
+            "matches": [
+                "*://*/*"
+            ],
             "js": ["content_script.js"]
         }
     ],
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "background.js",
+        "type": "module"
     },
     "permissions": [
         "alarms",
         "storage",
         "tabs",
-        "declarativeNetRequest",
-        "webRequest",
-        "webRequestBlocking"
+        "declarativeNetRequest"
     ],
-    "host_permissions": ["<all_urls>"],
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "wikitide-debug@wikitide.org",
-            "strict_min_version": "109.0"
-        }
-    }
+    "host_permissions": [
+        "<all_urls>"
+    ]
 }
