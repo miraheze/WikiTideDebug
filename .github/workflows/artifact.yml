@@ -1,0 +1,73 @@
+name: Artifact Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  EXT_NAME: WikiTideDebug
+
+jobs:
+  build-firefox:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install --global web-ext
+
+      - name: Build Firefox XPI
+        run: |
+          mkdir -p dist/firefox
+          rsync -a --exclude 'dist' ./ dist/firefox/
+          # Remove background.service_worker (not supported in Firefox)
+          jq 'del(.background.service_worker)' dist/firefox/manifest.json > dist/firefox/manifest.tmp.json
+          mv dist/firefox/manifest.tmp.json dist/firefox/manifest.json
+          web-ext build --source-dir=dist/firefox --overwrite-dest --artifacts-dir=dist/firefox
+          VERSION=$(jq -r '.version' dist/firefox/manifest.json)
+          mv dist/firefox/*.zip dist/firefox/$EXT_NAME-$VERSION.xpi
+
+      - name: Upload Firefox Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-artifacts
+          path: dist/firefox/*.xpi
+
+  build-chrome:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install --global web-ext
+
+      - name: Build Chrome ZIP
+        run: |
+          mkdir -p dist/chrome
+          rsync -a --exclude 'dist' ./ dist/chrome/
+          # Remove Firefox-specific fields from manifest
+          jq 'del(.background.scripts, .browser_specific_settings)' dist/chrome/manifest.json > dist/chrome/manifest.tmp.json
+          mv dist/chrome/manifest.tmp.json dist/chrome/manifest.json
+          VERSION=$(jq -r '.version' dist/chrome/manifest.json)
+
+          web-ext build --source-dir=dist/chrome --overwrite-dest --artifacts-dir=dist/chrome
+          mv dist/chrome/*.zip dist/chrome/$EXT_NAME-$VERSION.zip
+
+      - name: Upload Chrome Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-artifacts
+          path: dist/chrome/*.zip
