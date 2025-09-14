@@ -9,6 +9,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      EXT_NAME: WikiTideDebug
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -29,9 +31,8 @@ jobs:
           jq 'del(.background.service_worker)' dist/firefox/manifest.json > dist/firefox/manifest.tmp.json
           mv dist/firefox/manifest.tmp.json dist/firefox/manifest.json
           web-ext build --source-dir=dist/firefox --overwrite-dest --artifacts-dir=dist/firefox
-          for f in dist/firefox/*.zip; do
-            mv "$f" "${f%.zip}.xpi"
-          done
+          VERSION=$(jq -r '.version' dist/firefox/manifest.json)
+          mv dist/firefox/*.zip dist/firefox/$EXT_NAME-$VERSION.xpi
 
       - name: Build & Sign Firefox XPI
         env:
@@ -57,10 +58,9 @@ jobs:
             echo "Signing failed, probably version already exists. Skipping signed XPI."
             rm -f dist/firefox-signed/*.xpi
           else
-            # Rename signed XPI to include "-signed"
-            for f in dist/firefox-signed/*.xpi; do
-              mv "$f" "${f%.xpi}-signed.xpi"
-            done
+            # Rename signed XPI to include the actual extension name and "-signed"
+            VERSION=$(jq -r '.version' manifest.json)
+            mv dist/firefox-signed/*.xpi dist/firefox-signed/$EXT_NAME-$VERSION-signed.xpi
           fi
 
       - name: Build Chrome CRX and ZIP
@@ -70,19 +70,25 @@ jobs:
           # Remove Firefox-specific fields from manifest
           jq 'del(.background.scripts, .browser_specific_settings)' dist/chrome/manifest.json > dist/chrome/manifest.tmp.json
           mv dist/chrome/manifest.tmp.json dist/chrome/manifest.json
+          VERSION=$(jq -r '.version' dist/chrome/manifest.json)
+
           web-ext build --source-dir=dist/chrome --overwrite-dest --artifacts-dir=dist/chrome
+          mv dist/chrome/*.zip dist/chrome/$EXT_NAME-$VERSION.zip
+
           # Write secret key to file
           echo "${{ secrets.CRX_KEY }}" > dist/chrome/key.pem
-          VERSION=$(jq -r '.version' dist/chrome/manifest.json)
-          crx3 pack dist/chrome --output dist/chrome/wikitidedebug-$VERSION.crx --key dist/chrome/key.pem
-          mv web-extension.crx dist/chrome/wikitidedebug-$VERSION.crx
+
+          crx3 pack dist/chrome \
+            --output dist/chrome/$EXT_NAME-$VERSION.crx \
+            --key dist/chrome/key.pem
+
+          mv web-extension.crx dist/chrome/$EXT_NAME-$VERSION.crx
 
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(jq -r '.version' manifest.json)
-          REPO=$(basename $GITHUB_REPOSITORY)
           TAG="v$VERSION"
 
           if gh release view "$TAG" >/dev/null 2>&1; then
@@ -102,6 +108,6 @@ jobs:
 
             gh release create "$TAG" \
               $FILES \
-              --title "$REPO $VERSION" \
-              --notes "Automated release of $REPO version $VERSION for Firefox (unsigned + signed if available) and Chrome."
+              --title "$EXT_NAME $VERSION" \
+              --notes "Automated release of $EXT_NAME version $VERSION for Firefox (unsigned + signed if available) and Chrome."
           fi
