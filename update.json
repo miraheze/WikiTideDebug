@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "wikitidedebug@wikitide.org": {
+      "updates": [
+        {
+          "version": "3.1.0",
+          "update_link": "https://github.com/miraheze/WikiTideDebug/releases/download/v3.1.0/wikitidedebug-3.1.0.xpi"
+        }
+      ]
+    }
+  }
+}
