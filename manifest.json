@@ -1,32 +1,33 @@
 {
-    "manifest_version": 3,
-    "name": "WikiTideDebug",
-    "description": "Injects 'X-WikiTide-Debug' header to HTTP requests.",
-    "version": "3.2.0",
-    "icons": {
-        "512": "logo.png"
-    },
-    "action": {
-        "default_title": "X-WikiTide-Debug",
-        "default_popup": "popup.html"
-    },
-    "background": {
-        "service_worker": "service-worker.js",
-        "scripts": [ "service-worker.js" ],
-        "type": "module"
-    },
-    "permissions": [
-        "alarms",
-        "storage",
-        "tabs",
-        "declarativeNetRequest"
-    ],
-    "host_permissions": [ "<all_urls>" ],
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "wikitidedebug@wikitide.org",
-            "strict_min_version": "115.0",
-            "update_url": "https://raw.githubusercontent.com/miraheze/WikiTideDebug/refs/heads/main/update.json"
-        }
-    }
+	"manifest_version": 3,
+	"name": "WikiTideDebug",
+	"description": "Injects 'X-WikiTide-Debug' header to HTTP requests.",
+	"author": "Universal Omega",
+	"version": "3.3.0",
+	"icons": {
+		"512": "logo.png"
+	},
+	"action": {
+		"default_title": "X-WikiTide-Debug",
+		"default_popup": "popup.html"
+	},
+	"background": {
+		"service_worker": "service-worker.js",
+		"scripts": [ "service-worker.js" ],
+		"type": "module"
+	},
+	"permissions": [
+		"alarms",
+		"storage",
+		"tabs",
+		"declarativeNetRequest"
+	],
+	"host_permissions": [ "<all_urls>" ],
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "wikitidedebug@wikitide.org",
+			"strict_min_version": "115.0",
+			"update_url": "https://raw.githubusercontent.com/miraheze/WikiTideDebug/refs/heads/main/update.json"
+		}
+	}
 }
