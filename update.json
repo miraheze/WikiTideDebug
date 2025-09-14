@@ -1,12 +1,16 @@
 {
-  "addons": {
-    "wikitidedebug@wikitide.org": {
-      "updates": [
-        {
-          "version": "3.2.0",
-          "update_link": "https://github.com/miraheze/WikiTideDebug/releases/download/v3.2.0/afeb7fde9f5646488f49-3.2.0-signed.xpi"
-        }
-      ]
-    }
-  }
+	"addons": {
+		"wikitidedebug@wikitide.org": {
+			"updates": [
+				{
+					"version": "3.2.0",
+					"update_link": "https://github.com/miraheze/WikiTideDebug/releases/download/v3.2.0/afeb7fde9f5646488f49-3.2.0-signed.xpi"
+				},
+				{
+					"version": "3.3.0",
+					"update_link": "https://github.com/miraheze/WikiTideDebug/releases/download/v3.3.0/WikiTideDebug-3.3.0-signed.xpi"
+				}
+			]
+		}
+	}
 }
