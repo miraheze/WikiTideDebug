@@ -101,7 +101,7 @@ const debug = {
 					accessKey: await debug.getAccessKey()
 				} );
 			} )();
-			// Make sendResponse available asynchronous
+			// Make sendResponse available asynchronously
 			return true;
 		}
 	}
