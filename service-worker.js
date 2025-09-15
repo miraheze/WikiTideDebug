@@ -19,10 +19,10 @@
 
 const debug = {
 	enabled: false,
-	backend: 'test151',
+	backend: 'mwtask151',
 
-	toggle: ( state ) => {
-		debug.enabled = state;
+	setEnabled: ( value ) => {
+		debug.enabled = value;
 		debug.updateIcon();
 		debug.updateDNRRules();
 		if ( debug.enabled ) {
@@ -82,26 +82,31 @@ const debug = {
 
 	onAlarm: ( alarm ) => {
 		if ( alarm.name === 'autoOff' ) {
-			debug.toggle( false );
+			debug.setEnabled( false );
 		}
 	},
 
-	onMessage: async ( request, sender, sendResponse ) => {
-		if ( request.action === 'set' ) {
-			debug.toggle( request.enabled );
+	onMessage: ( request, _sender, sendResponse ) => {
+		if ( request.action === 'set-state' ) {
+			debug.setEnabled( request.enabled );
 			debug.backend = request.backend;
-		} else if ( request.action === 'get' ) {
-			sendResponse( {
-				enabled: debug.enabled,
-				backend: debug.backend,
-				accessKey: await debug.getAccessKey()
-			} );
+			return;
+		}
+
+		if ( request.action === 'get-state' ) {
+			( async () => {
+				sendResponse( {
+					enabled: debug.enabled,
+					backend: debug.backend,
+					accessKey: await debug.getAccessKey()
+				} );
+			} )();
+			// Make sendResponse available asynchronously
+			return true;
 		}
 	}
 };
 
-chrome.runtime.onMessage.addListener( ( request, sender, sendResponse ) => {
-	debug.onMessage( request, sender, sendResponse );
-	return true; // keep sendResponse async
-} );
+chrome.runtime.onMessage.addListener( debug.onMessage );
 chrome.alarms.onAlarm.addListener( debug.onAlarm );
+debug.updateIcon();
