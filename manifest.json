@@ -5,10 +5,11 @@
 	"author": "Universal Omega",
 	"version": "3.3.0",
 	"icons": {
-		"512": "logo.png"
+		"512": "images/icon-512.png"
 	},
 	"action": {
-		"default_title": "X-WikiTide-Debug",
+		"default_icon": "images/icon-128.png",
+		"default_title": "WikiTideDebug",
 		"default_popup": "popup.html"
 	},
 	"background": {

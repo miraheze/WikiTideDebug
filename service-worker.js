@@ -19,7 +19,7 @@
 
 const debug = {
 	enabled: false,
-	backend: 'test151',
+	backend: 'mwtask151',
 
 	setEnabled: ( value ) => {
 		debug.enabled = value;
@@ -86,14 +86,14 @@ const debug = {
 		}
 	},
 
-	onMessage: ( request, sender, sendResponse ) => {
-		if ( request.action === 'set' ) {
+	onMessage: ( request, _sender, sendResponse ) => {
+		if ( request.action === 'set-state' ) {
 			debug.setEnabled( request.enabled );
 			debug.backend = request.backend;
 			return;
 		}
 
-		if ( request.action === 'get' ) {
+		if ( request.action === 'get-state' ) {
 			( async () => {
 				sendResponse( {
 					enabled: debug.enabled,

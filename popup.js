@@ -4,20 +4,19 @@ document.addEventListener( 'DOMContentLoaded', async () => {
 
 	const $options = Array.from( document.querySelectorAll( '.option' ) );
 
-	function onUpdate() {
-		const state = { action: 'set' };
-
+	const onUpdate = () => {
+		const state = { action: 'set-state' };
 		$options.forEach( ( $el ) => {
 			state[ $el.id ] = $el.checked !== undefined ? $el.checked : $el.value;
 		} );
 
 		chrome.runtime.sendMessage( state );
-	}
+	};
 
-	async function getAccessKey() {
+	const getAccessKey = async () => {
 		const { accessKey } = await chrome.storage.local.get( [ 'accessKey' ] );
 		return accessKey || '';
-	}
+	};
 
 	// Handling for access key input
 	const accessKeyInput = document.getElementById( 'accessKey' );
@@ -28,17 +27,14 @@ document.addEventListener( 'DOMContentLoaded', async () => {
 
 	accessKeyInput.value = await getAccessKey();
 
-	chrome.runtime.sendMessage( { action: 'get' }, ( response ) => {
+	chrome.runtime.sendMessage( { action: 'get-state' }, ( response ) => {
 		$options.forEach( async ( $el ) => {
-			let value = response[ $el.id ];
-
-			if ( typeof value === 'boolean' ) {
+			const value = response[ $el.id ];
+			if ( $el.checked !== undefined ) {
 				$el.checked = value;
+			} else if ( $el.id === 'accessKey' ) {
+				$el.value = await getAccessKey();
 			} else {
-				if ( $el.id === 'accessKey' ) {
-					value = await getAccessKey();
-				}
-
 				$el.value = value;
 			}
 
