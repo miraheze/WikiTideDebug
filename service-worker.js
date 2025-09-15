@@ -52,8 +52,16 @@ const debug = {
 			action: {
 				type: 'modifyHeaders',
 				requestHeaders: [
-					{ header: 'X-WikiTide-Debug', operation: debug.enabled ? 'set' : 'remove', value: debug.enabled ? debug.backend : undefined },
-					{ header: 'X-WikiTide-Debug-Access-Key', operation: debug.enabled ? 'set' : 'remove', value: debug.enabled ? accessKey : undefined }
+					{
+						header: 'X-WikiTide-Debug',
+						operation: debug.enabled ? 'set' : 'remove',
+						value: debug.enabled ? debug.backend : undefined
+					},
+					{
+						header: 'X-WikiTide-Debug-Access-Key',
+						operation: debug.enabled ? 'set' : 'remove',
+						value: debug.enabled ? accessKey : undefined
+					}
 				]
 			},
 			condition: {
@@ -86,7 +94,7 @@ const debug = {
 			sendResponse( {
 				enabled: debug.enabled,
 				backend: debug.backend,
-				accessKey: await debug.getAccessKey(),
+				accessKey: await debug.getAccessKey()
 			} );
 		}
 	}
