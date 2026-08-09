@@ -50,7 +50,7 @@ jobs:
           web-ext sign \
             --source-dir=dist/firefox-sign-source \
             --artifacts-dir=dist/firefox-signed \
-            --channel=unlisted
+            --channel=listed
           STATUS=$?
           set -e
 
