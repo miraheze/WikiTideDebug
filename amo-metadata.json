@@ -1,0 +1,11 @@
+{
+	"summary": {
+		"en-US": "Injects the X-WikiTide-Debug header into HTTP requests."
+	},
+	"categories": [
+		"other"
+	],
+	"version": {
+		"license": "Apache-2.0"
+	}
+}

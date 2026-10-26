@@ -50,6 +50,7 @@ jobs:
           web-ext sign \
             --source-dir=dist/firefox-sign-source \
             --artifacts-dir=dist/firefox-signed \
+            --amo-metadata=dist/firefox-sign-source/amo-metadata.json \
             --channel=listed
           STATUS=$?
           set -e
