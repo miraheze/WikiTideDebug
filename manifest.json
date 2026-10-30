@@ -4,7 +4,7 @@
 	"description": "Injects 'X-WikiTide-Debug' header to HTTP requests.",
 	"author": "Universal Omega",
 	"license": "Apache-2.0",
-	"version": "3.3.3",
+	"version": "3.3.4",
 	"icons": {
 		"512": "images/icon-512.png"
 	},
@@ -21,7 +21,6 @@
 	"permissions": [
 		"alarms",
 		"storage",
-		"tabs",
 		"declarativeNetRequest"
 	],
 	"host_permissions": [ "<all_urls>" ],
