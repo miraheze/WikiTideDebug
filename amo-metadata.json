@@ -4,7 +4,7 @@
 	},
 	"slug": "wikitidedebug",
 	"summary": {
-		"en-US": "Injects the X-WikiTide-Debug header into HTTP requests for WikiTide/Miraheze debugging."
+		"en-US": "Injects 'X-WikiTide-Debug' header to HTTP requests."
 	},
 	"description": {
 		"en-US": "The WikiTideDebug extension allows WikiTide/Miraheze developers to debug code by injecting an 'X-WikiTide-Debug' header into HTTP requests. Header injection can be toggled from the toolbar icon, and turns itself off after 15 minutes.\n\nWhile active, the header (and an optional access key header) is added to requests for all sites, since WikiTide/Miraheze wikis can use custom domains. No user data is collected."
