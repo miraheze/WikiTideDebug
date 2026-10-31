@@ -2,12 +2,20 @@
 	"name": {
 		"en-US": "WikiTideDebug"
 	},
+	"slug": "wikitidedebug",
 	"summary": {
 		"en-US": "Injects the X-WikiTide-Debug header into HTTP requests for WikiTide/Miraheze debugging."
 	},
 	"description": {
 		"en-US": "The WikiTideDebug extension allows WikiTide/Miraheze developers to debug code by injecting an 'X-WikiTide-Debug' header into HTTP requests. Header injection can be toggled from the toolbar icon, and turns itself off after 15 minutes.\n\nWhile active, the header (and an optional access key header) is added to requests for all sites, since WikiTide/Miraheze wikis can use custom domains. No user data is collected."
 	},
+	"categories": {
+		"firefox": [
+			"other"
+		]
+	},
+	"contributions_url": "https://github.com/sponsors/miraheze",
+	"default_locale": "en-US",
 	"homepage": {
 		"en-US": "https://github.com/miraheze/WikiTideDebug"
 	},
@@ -17,16 +25,9 @@
 	"support_url": {
 		"en-US": "https://issue-tracker.miraheze.org"
 	},
-	"contributions_url": "https://github.com/sponsors/miraheze",
-	"default_locale": "en-US",
-	"categories": {
-		"firefox": [
-			"other"
-		]
-	},
 	"version": {
-		"license": "Apache-2.0",
+		"approval_notes": "No build step is needed to review this. The source in the repository is the extension as shipped, with no bundling or minification. The Firefox build only removes background.service_worker from manifest.json, because Firefox uses background.scripts. The extension adds X-WikiTide-Debug and an optional X-WikiTide-Debug-Access-Key header to requests using declarativeNetRequest session rules, only while the user turns it on, and it turns itself off after 15 minutes. It makes no network requests of its own, loads no remote code, and collects no data.",
 		"compatibility": [ "android", "firefox" ],
-		"approval_notes": "No build step is needed to review this. The source in the repository is the extension as shipped, with no bundling or minification. The Firefox build only removes background.service_worker from manifest.json, because Firefox uses background.scripts. The extension adds X-WikiTide-Debug and an optional X-WikiTide-Debug-Access-Key header to requests using declarativeNetRequest session rules, only while the user turns it on, and it turns itself off after 15 minutes. It makes no network requests of its own, loads no remote code, and collects no data."
+		"license": "Apache-2.0"
 	}
 }
