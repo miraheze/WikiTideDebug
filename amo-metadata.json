@@ -23,6 +23,7 @@
 	},
 	"version": {
 		"license": "Apache-2.0",
+		"compatibility": [ "android", "firefox" ],
 		"approval_notes": "No build step is needed to review this. The source in the repository is the extension as shipped, with no bundling or minification. The Firefox build only removes background.service_worker from manifest.json, because Firefox uses background.scripts. The extension adds X-WikiTide-Debug and an optional X-WikiTide-Debug-Access-Key header to requests using declarativeNetRequest session rules, only while the user turns it on, and it turns itself off after 15 minutes. It makes no network requests of its own, loads no remote code, and collects no data."
 	}
 }
